@@ -16,7 +16,8 @@ app.get('/', (req, res) => {
 });
 
 // Initialize Database
-const db = new sqlite3.Database(path.join(__dirname, 'database.sqlite'), (err) => {
+const dbPath = process.env.VERCEL ? '/tmp/database.sqlite' : path.join(__dirname, 'database.sqlite');
+const db = new sqlite3.Database(dbPath, (err) => {
     if (err) console.error('Database opening error: ', err);
     else {
         db.run(`CREATE TABLE IF NOT EXISTS glossary_entries (
@@ -194,9 +195,13 @@ app.get('/api/entries', (req, res) => {
     });
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+    app.listen(PORT, () => {
+        console.log(`Server running on http://localhost:${PORT}`);
+    });
 
-// Force event loop to stay open indefinitely (prevents phantom Exit 0 trace)
-setInterval(() => {}, 1000 * 60 * 60 * 24);
+    // Force event loop to stay open indefinitely 
+    setInterval(() => {}, 1000 * 60 * 60 * 24);
+}
+
+module.exports = app;
