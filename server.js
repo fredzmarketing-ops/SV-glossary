@@ -94,6 +94,9 @@ EEAT QUALITY CHECKLIST — every entry must pass:
     const um = `Generate EEAT- and SGE-optimized glossary entries for StreamlineVerify.com for these healthcare compliance terms:\n\n${keywords.map((k, i) => `${i + 1}. ${k}`).join('\n')}`;
 
     const modelsToTry = [
+        'claude-4-6-opus-20260205',
+        'claude-4-6-sonnet-20260205',
+        'claude-4-5-haiku-20251101',
         'claude-3-7-sonnet-latest',
         'claude-3-7-sonnet-20250219',
         'claude-3-5-sonnet-latest',
