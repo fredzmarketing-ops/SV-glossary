@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StreamlineVerify Glossary Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0d1f3c;--navy-mid:#1a3160;--teal:#0e9f8e;--teal-light:#12c9b2;--cream:#f5f1eb;--cream-dark:#ede8e0;--ink:#1a1a2e;--muted:#6b7280;--border:#d9d3c8;--white:#ffffff;--eeat-green:#16a34a;--eeat-bg:#f0fdf4;--eeat-border:#bbf7d0;--sge-purple:#7c3aed;--sge-bg:#f5f3ff;--sge-border:#ddd6fe;--seo-blue:#1d4ed8;--seo-bg:#eff6ff;--seo-border:#bfdbfe}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh}
+header{background:var(--navy);padding:18px 40px;display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid var(--teal);position:sticky;top:0;z-index:100}
+.logo{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#fff}
+.logo span{color:var(--teal-light)}
+.hb{display:flex;gap:8px}
+.badge{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:3px 9px;border-radius:4px}
+.b-eeat{background:rgba(22,163,74,.2);color:#4ade80;border:1px solid rgba(74,222,128,.3)}
+.b-sge{background:rgba(124,58,237,.2);color:#c4b5fd;border:1px solid rgba(196,181,253,.3)}
+.b-seo{background:rgba(29,78,216,.2);color:#93c5fd;border:1px solid rgba(147,197,253,.3)}
+.app{display:grid;grid-template-columns:360px 1fr;min-height:calc(100vh - 59px)}
+.sidebar{background:var(--navy-mid);padding:28px 22px;display:flex;flex-direction:column;gap:16px;border-right:1px solid rgba(255,255,255,.07);overflow-y:auto;max-height:calc(100vh - 59px);position:sticky;top:59px}
+.st{font-family:'Playfair Display',serif;font-size:15px;color:#fff;font-weight:600}
+.ss{font-size:11.5px;color:rgba(255,255,255,.45);line-height:1.6;margin-top:4px}
+.sl{font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:6px}
+textarea#ki{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);border-radius:10px;padding:13px 14px;color:#fff;font-family:'DM Mono',monospace;font-size:12px;line-height:1.75;resize:vertical;min-height:160px;outline:none;transition:border-color .2s}
+textarea#ki::placeholder{color:rgba(255,255,255,.25)}
+textarea#ki:focus{border-color:var(--teal)}
+.cc{font-size:11px;color:rgba(255,255,255,.3);text-align:right;margin-top:4px}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{background:rgba(14,159,142,.12);border:1px solid rgba(14,159,142,.3);color:var(--teal-light);font-size:11px;font-weight:500;padding:4px 9px;border-radius:20px;cursor:pointer;transition:all .15s}
+.chip:hover{background:rgba(14,159,142,.28);border-color:var(--teal-light)}
+.tl{display:flex;flex-direction:column;gap:8px}
+.tr{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ti{flex:1}
+.tn{font-size:12px;color:rgba(255,255,255,.75);font-weight:500}
+.td{font-size:10px;color:rgba(255,255,255,.3);margin-top:1px}
+.tog{position:relative;width:36px;height:19px;flex-shrink:0}
+.tog input{opacity:0;width:0;height:0}
+.ts{position:absolute;inset:0;background:rgba(255,255,255,.12);border-radius:20px;cursor:pointer;transition:.2s}
+.ts:before{content:'';position:absolute;width:13px;height:13px;left:3px;top:3px;background:white;border-radius:50%;transition:.2s}
+.tog input:checked+.ts{background:var(--teal)}
+.tog input:checked+.ts:before{transform:translateX(17px)}
+.ei{background:rgba(22,163,74,.1);border:1px solid rgba(74,222,128,.2);border-radius:8px;padding:12px 14px}
+.et{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#4ade80;margin-bottom:7px}
+.ep{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.epi{font-size:10.5px;color:rgba(255,255,255,.55);display:flex;align-items:flex-start;gap:5px;line-height:1.4}
+.ed{width:5px;height:5px;border-radius:50%;background:#4ade80;margin-top:4px;flex-shrink:0}
+.gbtn{background:var(--teal);color:#fff;border:none;border-radius:10px;padding:14px 20px;font-family:'DM Sans',sans-serif;font-size:13.5px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.gbtn:hover{background:var(--teal-light);transform:translateY(-1px);box-shadow:0 4px 16px rgba(14,159,142,.35)}
+.gbtn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.spin{width:15px;height:15px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none}
+.gbtn.loading .spin{display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.content{padding:32px 40px;overflow-y:auto}
+.ch{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;gap:20px}
+.ct{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--navy);line-height:1.2}
+.ct span{color:var(--teal)}
+.cts{font-size:12px;color:var(--muted);margin-top:4px}
+.ebs{display:flex;gap:8px;flex-shrink:0}
+.eb{background:transparent;border:1.5px solid var(--border);color:var(--muted);padding:7px 14px;border-radius:7px;font-size:11.5px;font-weight:600;cursor:pointer;transition:all .15s}
+.eb:hover{border-color:var(--teal);color:var(--teal);background:rgba(14,159,142,.05)}
+.es{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;text-align:center;gap:14px}
+.sb{display:flex;margin-bottom:22px;background:var(--navy);border-radius:10px;overflow:hidden}
+.stat{padding:14px 18px;flex:1;border-right:1px solid rgba(255,255,255,.08)}
+.stat:last-child{border-right:none}
+.sn{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--teal-light)}
+.sl2{font-size:10px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+.sw{position:relative;margin-bottom:16px}
+.sw input{width:100%;padding:11px 16px 11px 40px;border:1.5px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:13.5px;background:#fff;color:var(--ink);outline:none;transition:border-color .2s}
+.sw input:focus{border-color:var(--teal)}
+.si{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.ib{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:24px}
+.ip{font-size:11px;font-weight:700;font-family:'DM Mono',monospace;width:27px;height:27px;display:flex;align-items:center;justify-content:center;border-radius:5px;cursor:pointer;transition:all .12s;background:#fff;border:1px solid var(--border);color:var(--muted);text-decoration:none}
+.ip.active{background:var(--navy);color:white;border-color:var(--navy)}
+.ip.inactive{opacity:.28;cursor:default;pointer-events:none}
+.as{margin-bottom:28px}
+.ah{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.al{font-family:'Playfair Display',serif;font-size:44px;font-weight:700;color:var(--navy);line-height:1;min-width:44px}
+.aline{flex:1;height:1px;background:var(--border)}
+.ac{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:1px;text-transform:uppercase}
+.ge{background:#fff;border:1px solid var(--border);border-radius:14px;margin-bottom:14px;overflow:hidden;position:relative;transition:box-shadow .2s,transform .2s;animation:fs .35s ease both}
+.ge:hover{box-shadow:0 6px 24px rgba(13,31,60,.09);transform:translateY(-1px)}
+@keyframes fs{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.etb{padding:20px 24px 16px;border-bottom:1px solid var(--cream-dark)}
+.ehr{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px}
+.eterm{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--navy);line-height:1.2}
+.ea{display:flex;gap:5px;opacity:0;transition:opacity .15s;flex-shrink:0}
+.ge:hover .ea{opacity:1}
+.eab{background:var(--cream);border:1px solid var(--border);border-radius:5px;padding:3px 9px;font-size:10.5px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .12s}
+.eab:hover{background:var(--navy);color:white;border-color:var(--navy)}
+.etags{display:flex;flex-wrap:wrap;gap:5px}
+.tag{font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;padding:2px 8px;border-radius:4px}
+.tt{background:rgba(14,159,142,.09);color:var(--teal);border:1px solid rgba(14,159,142,.2)}
+.te{background:var(--eeat-bg);color:var(--eeat-green);border:1px solid var(--eeat-border)}
+.tg{background:var(--sge-bg);color:var(--sge-purple);border:1px solid var(--sge-border)}
+.esec{padding:16px 24px;border-bottom:1px solid var(--cream-dark)}
+.esec:last-child{border-bottom:none}
+.esl{font-size:9.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.edef{font-size:14px;line-height:1.78;color:#1f2937}
+.sge-box{background:var(--sge-bg);border:1px solid var(--sge-border);border-radius:8px;padding:13px 16px}
+.sge-lbl{font-size:9.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--sge-purple);margin-bottom:7px}
+.sge-txt{font-size:13px;line-height:1.7;color:#3b0764}
+.fq{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:4px;display:flex;gap:7px}
+.fq::before{content:'Q:';color:var(--teal);font-weight:700;flex-shrink:0}
+.fa{font-size:12.5px;line-height:1.68;color:#374151;padding-left:24px;margin-bottom:8px}
+.eg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.es2{background:var(--eeat-bg);border:1px solid var(--eeat-border);border-radius:7px;padding:10px 12px}
+.esl2{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--eeat-green);margin-bottom:4px}
+.est{font-size:11.5px;line-height:1.6;color:#166534}
+.seo-box{background:var(--seo-bg);border:1px solid var(--seo-border);border-radius:8px;padding:12px 15px}
+.seo-t{font-size:9.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--seo-blue);margin-bottom:9px}
+.sf{margin-bottom:8px}
+.sf:last-child{margin-bottom:0}
+.sfl{font-size:10px;font-weight:600;color:var(--seo-blue);opacity:.7;margin-bottom:2px}
+.sfv{font-size:12px;color:#1e3a8a;line-height:1.5}
+.skws{display:flex;flex-wrap:wrap;gap:4px}
+.skw{font-size:10.5px;color:#1e40af;background:#dbeafe;border:1px solid #bfdbfe;border-radius:3px;padding:1px 7px;font-family:'DM Mono',monospace}
+.rt{font-size:11.5px;font-weight:500;color:var(--navy-mid);background:var(--cream);border:1px solid var(--border);border-radius:20px;padding:3px 10px}
+.ske{background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px 24px;margin-bottom:14px;animation:pulse 1.4s ease infinite}
+.sk{height:11px;background:var(--cream-dark);border-radius:5px;margin-bottom:9px}
+.sk.h{width:38%;height:18px;margin-bottom:12px}
+.sk.t{width:70px;height:9px;margin-bottom:14px}
+.sk.l1{width:96%}.sk.l2{width:85%}.sk.l3{width:60%}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+.toast{position:fixed;bottom:28px;right:28px;background:var(--navy);color:white;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:500;opacity:0;transform:translateY(8px);transition:all .2s;pointer-events:none;z-index:999;border-left:3px solid var(--teal)}
+.toast.show{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Streamline<span>Verify</span> — Glossary Generator</div>
+  <div class="hb">
+    <span class="badge b-eeat">EEAT</span>
+    <span class="badge b-sge">SGE Ready</span>
+    <span class="badge b-seo">SEO Optimized</span>
+  </div>
+</header>
+<div class="app">
+  <aside class="sidebar">
+    <div><div class="st">Generate Glossary Entries</div><div class="ss">Every entry is engineered to satisfy Google EEAT signals, SGE AI Overviews, and on-page SEO — ready to publish on streamlineverify.com.</div></div>
+    <div>
+      <div class="sl">Claude API Key</div>
+      <div class="sw" style="display:block;margin-bottom:16px"><span class="si">🔑</span><input type="password" id="apiKey" placeholder="sk-ant-..." value="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"></div>
+    </div>
+    <div>
+      <div class="sl">Quick Add Keywords</div>
+      <div class="chips" id="presetChips"></div>
+    </div>
+    <div>
+      <div class="sl">Keywords (one per line)</div>
+      <textarea id="ki" placeholder="e.g.&#10;OIG Exclusion List&#10;LEIE&#10;Exclusion Screening&#10;OFAC Check"></textarea>
+      <div class="cc" id="cc">0 keywords</div>
+    </div>
+    <div>
+      <div class="sl" style="margin-bottom:10px">Entry Sections</div>
+      <div class="tl">
+        <div class="tr"><div class="ti"><div class="tn">SGE Answer Snippet</div><div class="td">Optimized for Google AI Overviews extraction</div></div><label class="tog"><input type="checkbox" id="tSge" checked><span class="ts"></span></label></div>
+        <div class="tr"><div class="ti"><div class="tn">FAQ — People Also Ask</div><div class="td">2 Q&As targeting PAA boxes &amp; voice search</div></div><label class="tog"><input type="checkbox" id="tFaq" checked><span class="ts"></span></label></div>
+        <div class="tr"><div class="ti"><div class="tn">EEAT Trust Signals</div><div class="td">Experience · Expertise · Authority · Trust</div></div><label class="tog"><input type="checkbox" id="tEeat" checked><span class="ts"></span></label></div>
+        <div class="tr"><div class="ti"><div class="tn">SEO Meta Block</div><div class="td">Title tag, meta description &amp; LSI keywords</div></div><label class="tog"><input type="checkbox" id="tSeo" checked><span class="ts"></span></label></div>
+        <div class="tr"><div class="ti"><div class="tn">Also Known As</div><div class="td">Abbreviations &amp; alternate names</div></div><label class="tog"><input type="checkbox" id="tAka" checked><span class="ts"></span></label></div>
+        <div class="tr"><div class="ti"><div class="tn">Related Terms</div><div class="td">Internal linking &amp; topical clustering</div></div><label class="tog"><input type="checkbox" id="tRel" checked><span class="ts"></span></label></div>
+      </div>
+    </div>
+    <div class="ei">
+      <div class="et">EEAT Framework Applied</div>
+      <div class="ep">
+        <div class="epi"><div class="ed"></div>Experience: real-world usage context</div>
+        <div class="epi"><div class="ed"></div>Expertise: regulatory citations</div>
+        <div class="epi"><div class="ed"></div>Authority: federal body sourcing</div>
+        <div class="epi"><div class="ed"></div>Trust: neutral, verifiable tone</div>
+      </div>
+    </div>
+    <button class="gbtn" id="gbtn" onclick="go()"><div class="spin"></div><span id="btext">✦ Generate Glossary</span></button>
+  </aside>
+  <main class="content">
+    <div class="ch">
+      <div><div class="ct">Healthcare Compliance <span>Glossary</span></div><div class="cts">EEAT · SGE-Ready · SEO Optimized — for StreamlineVerify.com</div></div>
+      <div class="ebs" id="ebs" style="display:none">
+        <button class="eb" onclick="expJSON()">↓ JSON</button>
+        <button class="eb" onclick="expTXT()">↓ TXT</button>
+        <button class="eb" onclick="cpAll()">⎘ Copy All</button>
+        <button class="eb" onclick="clrAll()">✕ Clear</button>
+      </div>
+    </div>
+    <div class="es" id="emp"><div style="font-size:44px">📋</div><div style="font-family:'Playfair Display',serif;font-size:20px;color:var(--navy)">No entries yet</div><div style="font-size:13px;color:var(--muted);max-width:320px;line-height:1.65">Add keywords on the left and click Generate. Every definition is crafted for EEAT, SGE snippets, and SEO ranking.</div></div>
+    <div class="sb" id="sb" style="display:none">
+      <div class="stat"><div class="sn" id="stot">0</div><div class="sl2">Total Terms</div></div>
+      <div class="stat"><div class="sn" id="slet">0</div><div class="sl2">Letters</div></div>
+      <div class="stat"><div class="sn" id="sse">0</div><div class="sl2">This Session</div></div>
+      <div class="stat"><div class="sn">✓</div><div class="sl2">EEAT Verified</div></div>
+      <div class="stat"><div class="sn">✓</div><div class="sl2">SGE Optimized</div></div>
+    </div>
+    <div class="sw" id="swrap" style="display:none"><span class="si">🔍</span><input type="text" id="srch" placeholder="Search terms, definitions…" oninput="filt()"></div>
+    <div class="ib" id="ibar" style="display:none"></div>
+    <div id="out"></div>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const PRESETS=['OIG Exclusion List','LEIE','OFAC Check','CMS Preclusion List','Exclusion Screening','SAM.gov Exclusions','Credentialing Management Software','Medicare Compliance','Medicaid Compliance','Sanctions Screening Software','Healthcare Risk Management Software','Compliance Automation Software','Social Security Death Master File','OIG Healthcare Exclusions','LEIE Check','Healthcare Compliance Software','Provider Credentialing','False Claims Act'];
+const ki=document.getElementById('ki');
+let entries=[],sess=0;
+
+// Presets
+const pc=document.getElementById('presetChips');
+PRESETS.forEach(p=>{const b=document.createElement('button');b.className='chip';b.textContent=p;b.onclick=()=>addP(p);pc.appendChild(b);});
+
+ki.addEventListener('input',uc);
+function uc(){const n=gk().length;document.getElementById('cc').textContent=n+' keyword'+(n!==1?'s':'');}
+function gk(){return ki.value.split('\n').map(k=>k.trim()).filter(k=>k.length>0);}
+function addP(kw){if(!gk().includes(kw)){ki.value=(ki.value.trim()?ki.value.trim()+'\n':'')+kw;uc();}}
+
+async function go(){
+  const kws=gk();
+  if(!kws.length){toast2('Please enter at least one keyword.');return;}
+  const btn=document.getElementById('gbtn');
+  btn.disabled=true;btn.classList.add('loading');document.getElementById('btext').textContent='Generating…';
+  document.getElementById('emp').style.display='none';
+  const out=document.getElementById('out');
+  const sk=document.createElement('div');sk.id='skel';
+  for(let i=0;i<kws.length;i++) sk.innerHTML+=`<div class="ske"><div class="sk h"></div><div class="sk t"></div><div class="sk l1"></div><div class="sk l2"></div><div class="sk l3"></div></div>`;
+  out.prepend(sk);
+  const s1=document.getElementById('tSge').checked;
+  const s2=document.getElementById('tFaq').checked;
+  const s3=document.getElementById('tEeat').checked;
+  const s4=document.getElementById('tSeo').checked;
+  const s5=document.getElementById('tAka').checked;
+  const s6=document.getElementById('tRel').checked;
+
+  const sys=`You are a senior healthcare compliance content strategist and SEO specialist writing glossary entries for StreamlineVerify.com — a leading OIG exclusion screening and healthcare compliance SaaS platform.
+
+Your goal: write glossary entries that rank on Google, appear in SGE AI Overviews, and demonstrate full EEAT compliance per Google's Search Quality Evaluator Guidelines.
+
+OUTPUT FORMAT: Respond ONLY with a valid raw JSON array. No markdown fences, no preamble, no trailing commentary.
+
+Each object must contain:
+
+"term": Exact keyword as provided.
+
+"type": Exactly one of: ["Regulatory Database","Federal Program","Compliance Software","Compliance Process","Federal Agency","Legal Standard","Screening Tool","Healthcare Program","Government List","Risk Management Tool"]
+
+"definition": 3-5 sentences. EEAT + SEO requirements:
+- Sentence 1: Complete standalone definitional statement embedding the primary keyword. This sentence alone must answer "What is [term]?"
+- Include the governing federal agency, law, or regulation (OIG under HHS, 42 U.S.C. section 1320a-7, CMS, OFAC under U.S. Treasury, SAM.gov under FAR Part 9)
+- Explain real-world consequence or obligation for healthcare organizations or providers
+- Use precise compliance-industry language; avoid vague generalities
+- Tone: authoritative, factual, neutral — never promotional
+
+${s1?`"sge_snippet": 40-60 words. Engineered for Google SGE AI Overviews. Must: begin with the term itself, completely answer "What is [term]?" as standalone, define term plus regulatory context plus practical significance, spell out any acronym.`:`"sge_snippet":""`}
+
+${s2?`"faq": Array of exactly 2 objects with "q" and "a" keys. Optimized for People Also Ask and voice search. Questions use natural phrasing (Who must, What happens if, How often should, Why is, What is the difference between). Answers: 2-3 sentences, conversational but precise, self-contained. Vary types: one practical/operational, one regulatory/consequence-focused.`:`"faq":[]`}
+
+${s3?`"eeat": Object with exactly 4 string keys:
+"experience": Practical real-world application a compliance officer recognizes from direct experience.
+"expertise": Technical depth citing specific statute, CFR section, or agency rule (e.g., 42 U.S.C. section 1320a-7, 42 CFR Part 1001, Executive Order 13224, FAR 9.405).
+"authority": Connection to recognized federal bodies or official databases (OIG, CMS, HHS, OFAC, SSA, SAM.gov, Treasury).
+"trust": Why this definition is reliable, verifiable, and consistent with official government guidance.`:`"eeat":null`}
+
+${s4?`"seo": Object with:
+"title_tag": 50-60 characters. Format: "[Primary Keyword]: Definition and Guide | StreamlineVerify". Must contain exact keyword.
+"meta_description": 145-158 characters. Start with strong verb (Learn, Discover, Understand). Include primary keyword in first 20 words. End with soft CTA.
+"keywords": Array of exactly 6 LSI keyword phrases — mix of long-tail variants, regulatory terms, action phrases, co-occurring compliance concepts. No duplicates of main term.`:`"seo":null`}
+
+${s5?`"aka": Abbreviation(s) or alternate name(s) as single string. Empty string if none.`:`"aka":""`}
+
+${s6?`"related": Array of exactly 5 related glossary term strings for internal linking and topical authority clustering.`:`"related":[]`}
+
+EEAT QUALITY CHECKLIST — every entry must pass:
+- Definition sentence 1 is a complete, standalone, citable answer
+- Regulatory/statutory references are accurate and specific
+- No vague language without substantiation
+- SGE snippet is 40-60 words and fully self-contained
+- FAQ questions target real PAA-style search intent
+- EEAT signals reference named federal sources
+- SEO title is 50-60 chars with exact keyword
+- Meta description is 145-158 chars with verb-first opening
+- Tone throughout is neutral, professional, trustworthy`;
+
+  const apiKey = document.getElementById('apiKey').value;
+  if(!apiKey){
+    btn.disabled=false;btn.classList.remove('loading');document.getElementById('btext').textContent='✦ Generate Glossary';
+    toast2('Please enter your Claude API Key.');
+    return;
+  }
+
+  const btext = document.getElementById('btext');
+  btext.textContent = 'Generating 0% (0s)';
+  const startTime = Date.now();
+  const timer = setInterval(() => {
+    if(!btn.disabled) { clearInterval(timer); return; }
+    const match = btext.textContent.match(/Generating (\d+)%/);
+    if(match) {
+        btext.textContent = `Generating ${match[1]}% (${Math.floor((Date.now() - startTime) / 1000)}s)`;
+    }
+  }, 1000);
+
+  const chunkSize = 2;
+  let doneCount = 0;
+  let hasError = false;
+
+  for (let i = 0; i < kws.length; i += chunkSize) {
+    const chunk = kws.slice(i, i + chunkSize);
+    try {
+      const r = await fetch('http://127.0.0.1:1000/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          keywords: chunk,
+          apiKey: apiKey,
+          s1: s1, s2: s2, s3: s3, s4: s4, s5: s5, s6: s6
+        })
+      });
+      
+      if (!r.ok) {
+        const errData = await r.json();
+        throw new Error(errData.error || 'Request failed');
+      }
+      
+      const arr = await r.json();
+      document.getElementById('skel')?.remove();
+      sess += arr.length;
+      for (const e of arr) if (!entries.find(x => x.term.toLowerCase() === e.term.toLowerCase())) entries.push(e);
+      render();
+
+      doneCount += chunk.length;
+      const pct = Math.floor((Math.min(doneCount, kws.length) / kws.length) * 100);
+      const s = Math.floor((Date.now() - startTime) / 1000);
+      btext.textContent = `Generating ${pct}% (${s}s)`;
+      
+      const rem = gk().filter(x => !chunk.includes(x));
+      ki.value = rem.join('\n');
+      uc();
+      
+    } catch(err) {
+      document.getElementById('skel')?.remove();
+      if (!entries.length) document.getElementById('emp').style.display='flex';
+      toast2('Error: ' + err.message);
+      hasError = true;
+      break;
+    }
+  }
+
+  clearInterval(timer);
+  btn.disabled = false;
+  btn.classList.remove('loading');
+  btext.textContent = '✦ Generate Glossary';
+  
+  if (!hasError && doneCount > 0) {
+    toast2('✓ ' + doneCount + ' entr' + (doneCount > 1 ? 'ies' : 'y') + ' generated');
+  }
+}
+
+function render(f=''){
+  const out=document.getElementById('out');out.innerHTML='';
+  let fil=entries;
+  if(f) fil=entries.filter(e=>e.term.toLowerCase().includes(f.toLowerCase())||(e.definition||'').toLowerCase().includes(f.toLowerCase()));
+  const has=entries.length>0;
+  document.getElementById('emp').style.display=has?'none':'flex';
+  document.getElementById('sb').style.display=has?'flex':'none';
+  document.getElementById('swrap').style.display=has?'block':'none';
+  document.getElementById('ibar').style.display=has?'flex':'none';
+  document.getElementById('ebs').style.display=has?'flex':'none';
+  document.getElementById('stot').textContent=entries.length;
+  document.getElementById('sse').textContent=sess;
+  document.getElementById('slet').textContent=new Set(entries.map(e=>e.term[0].toUpperCase())).size;
+  if(!fil.length){out.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted)">No terms match your search.</div>';return;}
+  const g={};
+  for(const e of [...fil].sort((a,b)=>a.term.localeCompare(b.term))){const l=e.term[0].toUpperCase();if(!g[l])g[l]=[];g[l].push(e);}
+  for(const l of Object.keys(g).sort()){
+    const s=document.createElement('div');s.className='as';s.id='s-'+l;
+    s.innerHTML=`<div class="ah"><div class="al">${l}</div><div class="aline"></div><div class="ac">${g[l].length} term${g[l].length>1?'s':''}</div></div>`;
+    for(const e of g[l]) s.appendChild(buildE(e));
+    out.appendChild(s);
+  }
+  buildIdx(g);
+}
+
+function buildE(e){
+  const el=document.createElement('div');el.className='ge';
+  const s1=document.getElementById('tSge').checked;
+  const s2=document.getElementById('tFaq').checked;
+  const s3=document.getElementById('tEeat').checked;
+  const s4=document.getElementById('tSeo').checked;
+  const s5=document.getElementById('tAka').checked;
+  const s6=document.getElementById('tRel').checked;
+  let tags=`<span class="tag tt">${h(e.type||'Term')}</span>`;
+  if(s1&&e.sge_snippet) tags+=`<span class="tag tg">SGE Ready</span>`;
+  if(s3&&e.eeat) tags+=`<span class="tag te">EEAT ✓</span>`;
+  let html=`<div class="etb"><div class="ehr"><div class="eterm">${h(e.term)}</div><div class="ea"><button class="eab" onclick="cpE(${JSON.stringify(e.term)})">Copy</button><button class="eab" onclick="delE(${JSON.stringify(e.term)})">Remove</button></div></div><div class="etags">${tags}</div></div>`;
+  html+=`<div class="esec"><div class="esl">Definition</div><div class="edef">${h(e.definition)}</div></div>`;
+  if(s1&&e.sge_snippet) html+=`<div class="esec"><div class="sge-box"><div class="sge-lbl">✦ SGE Answer Snippet</div><div class="sge-txt">${h(e.sge_snippet)}</div></div></div>`;
+  if(s2&&e.faq&&e.faq.length){
+    html+=`<div class="esec"><div class="esl">People Also Ask (FAQ)</div>`;
+    for(const f of e.faq) html+=`<div class="fq">${h(f.q)}</div><div class="fa">${h(f.a)}</div>`;
+    html+=`</div>`;
+  }
+  if(s3&&e.eeat) html+=`<div class="esec"><div class="esl">EEAT Trust Signals</div><div class="eg"><div class="es2"><div class="esl2">Experience</div><div class="est">${h(e.eeat.experience||'')}</div></div><div class="es2"><div class="esl2">Expertise</div><div class="est">${h(e.eeat.expertise||'')}</div></div><div class="es2"><div class="esl2">Authority</div><div class="est">${h(e.eeat.authority||'')}</div></div><div class="es2"><div class="esl2">Trust</div><div class="est">${h(e.eeat.trust||'')}</div></div></div></div>`;
+  if(s4&&e.seo){
+    const kws=Array.isArray(e.seo.keywords)?e.seo.keywords:[];
+    const tl=(e.seo.title_tag||'').length,ml=(e.seo.meta_description||'').length;
+    const tc=tl>=50&&tl<=60?'#16a34a':'#dc2626',mc=ml>=145&&ml<=158?'#16a34a':'#dc2626';
+    html+=`<div class="esec"><div class="seo-box"><div class="seo-t">SEO Meta Block</div><div class="sf"><div class="sfl">Title Tag <span style="color:${tc};font-weight:600">${tl} chars</span></div><div class="sfv">${h(e.seo.title_tag||'')}</div></div><div class="sf"><div class="sfl">Meta Description <span style="color:${mc};font-weight:600">${ml} chars</span></div><div class="sfv">${h(e.seo.meta_description||'')}</div></div><div class="sf"><div class="sfl">LSI / Semantic Keywords</div><div class="skws">${kws.map(k=>`<span class="skw">${h(k)}</span>`).join('')}</div></div></div></div>`;
+  }
+  const ha=s5&&e.aka,hr=s6&&e.related&&e.related.length;
+  if(ha||hr){
+    html+=`<div class="esec" style="display:flex;gap:24px;flex-wrap:wrap">`;
+    if(ha) html+=`<div style="flex:1;min-width:160px"><div class="esl">Also Known As</div><div style="font-size:13px;color:#4b5563">${h(e.aka)}</div></div>`;
+    if(hr) html+=`<div style="flex:2;min-width:220px"><div class="esl">Related Terms</div><div style="display:flex;flex-wrap:wrap;gap:6px">${e.related.map(r=>`<span class="rt">${h(r)}</span>`).join('')}</div></div>`;
+    html+=`</div>`;
+  }
+  el.innerHTML=html;return el;
+}
+
+function buildIdx(g){
+  const bar=document.getElementById('ibar');bar.innerHTML='';
+  for(const l of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')){
+    const a=document.createElement('a');a.className='ip'+(g[l]?' active':' inactive');a.textContent=l;
+    if(g[l]) a.onclick=ev=>{ev.preventDefault();document.getElementById('s-'+l)?.scrollIntoView({behavior:'smooth',block:'start'});};
+    bar.appendChild(a);
+  }
+}
+
+function filt(){render(document.getElementById('srch').value);}
+function delE(t){entries=entries.filter(e=>e.term!==t);sess=Math.max(0,sess-1);render(document.getElementById('srch')?.value||'');}
+function cpE(t){
+  const e=entries.find(x=>x.term===t);if(!e)return;
+  let s=`TERM: ${e.term}\nTYPE: ${e.type||''}\n\nDEFINITION:\n${e.definition}`;
+  if(e.sge_snippet)s+=`\n\nSGE SNIPPET:\n${e.sge_snippet}`;
+  if(e.faq?.length)s+=`\n\nFAQ:\n`+e.faq.map(f=>`Q: ${f.q}\nA: ${f.a}`).join('\n\n');
+  if(e.eeat)s+=`\n\nEEAT:\nExperience: ${e.eeat.experience}\nExpertise: ${e.eeat.expertise}\nAuthority: ${e.eeat.authority}\nTrust: ${e.eeat.trust}`;
+  if(e.seo)s+=`\n\nSEO:\nTitle: ${e.seo.title_tag}\nMeta: ${e.seo.meta_description}\nKeywords: ${(e.seo.keywords||[]).join(', ')}`;
+  if(e.aka)s+=`\n\nAlso Known As: ${e.aka}`;
+  if(e.related?.length)s+=`\n\nRelated: ${e.related.join(', ')}`;
+  navigator.clipboard.writeText(s).then(()=>toast2('Entry copied!'));
+}
+function cpAll(){
+  const sorted=[...entries].sort((a,b)=>a.term.localeCompare(b.term));
+  let t='STREAMLINEVERIFY.COM — HEALTHCARE COMPLIANCE GLOSSARY\n'+'='.repeat(54)+'\n\n';
+  for(const e of sorted){
+    t+=`${e.term}\n${'─'.repeat(Math.min(e.term.length,40))}\n[${e.type}]\n\nDEFINITION:\n${e.definition}\n`;
+    if(e.sge_snippet)t+=`\nSGE SNIPPET:\n${e.sge_snippet}\n`;
+    if(e.faq?.length)t+=`\nFAQ:\n`+e.faq.map(f=>`Q: ${f.q}\nA: ${f.a}`).join('\n')+'\n';
+    if(e.eeat)t+=`\nEEAT:\nExperience: ${e.eeat.experience}\nExpertise: ${e.eeat.expertise}\nAuthority: ${e.eeat.authority}\nTrust: ${e.eeat.trust}\n`;
+    if(e.seo)t+=`\nSEO Title: ${e.seo.title_tag}\nMeta: ${e.seo.meta_description}\nKeywords: ${(e.seo.keywords||[]).join(', ')}\n`;
+    if(e.aka)t+=`Also Known As: ${e.aka}\n`;
+    if(e.related?.length)t+=`Related: ${e.related.join(', ')}\n`;
+    t+='\n\n';
+  }
+  navigator.clipboard.writeText(t).then(()=>toast2('All entries copied!'));
+}
+function expTXT(){
+  const sorted=[...entries].sort((a,b)=>a.term.localeCompare(b.term));
+  let t='STREAMLINEVERIFY.COM — HEALTHCARE COMPLIANCE GLOSSARY\n'+'='.repeat(54)+'\n\n';
+  for(const e of sorted){
+    t+=`${e.term}\n${'─'.repeat(Math.min(e.term.length,40))}\nType: ${e.type}\n\nDEFINITION:\n${e.definition}\n`;
+    if(e.sge_snippet)t+=`\nSGE SNIPPET:\n${e.sge_snippet}\n`;
+    if(e.faq?.length)t+=`\nFAQ:\n`+e.faq.map(f=>`Q: ${f.q}\nA: ${f.a}`).join('\n\n')+'\n';
+    if(e.eeat)t+=`\nEEAT:\n- Experience: ${e.eeat.experience}\n- Expertise: ${e.eeat.expertise}\n- Authority: ${e.eeat.authority}\n- Trust: ${e.eeat.trust}\n`;
+    if(e.seo)t+=`\nSEO:\n- Title: ${e.seo.title_tag}\n- Meta: ${e.seo.meta_description}\n- Keywords: ${(e.seo.keywords||[]).join(', ')}\n`;
+    if(e.aka)t+=`\nAlso Known As: ${e.aka}\n`;
+    if(e.related?.length)t+=`Related: ${e.related.join(', ')}\n`;
+    t+='\n\n';
+  }
+  const b=new Blob([t],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='streamlineverify-glossary.txt';a.click();
+}
+function expJSON(){
+  const b=new Blob([JSON.stringify(entries,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='streamlineverify-glossary.json';a.click();
+}
+function clrAll(){
+  if(!confirm('Remove all glossary entries?'))return;
+  entries=[];sess=0;document.getElementById('out').innerHTML='';document.getElementById('srch').value='';render();
+}
+function h(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+let tt;
+function toast2(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2800);}
+</script>
+</body>
+</html>
