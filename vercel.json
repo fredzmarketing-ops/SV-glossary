@@ -6,7 +6,7 @@
       "use": "@vercel/node"
     },
     {
-      "src": "streamlineverify-glossary.html",
+      "src": "index.html",
       "use": "@vercel/static"
     }
   ],
@@ -17,7 +17,7 @@
     },
     {
       "source": "/(.*)",
-      "destination": "/streamlineverify-glossary.html"
+      "destination": "/index.html"
     }
   ]
 }
